@@ -5,6 +5,7 @@ import type {
   SocialProvider,
   SocialProviderContext,
 } from "@/lib/social/types";
+import { toProxiedImageUrl } from "@/lib/social/image-proxy";
 
 type ScrapeProfileSuccessResponse = {
   ok: true;
@@ -113,9 +114,11 @@ export class ApiSocialProvider implements SocialProvider {
     const accountName = payload.data.username?.trim() || username;
     const accountHandle = payload.data.handle?.trim() || `@${accountName}`;
     const profileImageUrl =
-      payload.data.profile_picture_proxy_url?.trim() ||
-      payload.data.profile_picture_url?.trim() ||
-      "";
+      toProxiedImageUrl(
+        payload.data.profile_picture_proxy_url?.trim() ||
+        payload.data.profile_picture_url?.trim() ||
+        "",
+      );
 
     return {
       platform: this.platform,
